@@ -1,0 +1,150 @@
+---
+title: "Squirrels"
+author: "Katherine Ginensky"
+date: "2024-02-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "~/Documents/Georgia Tech/Spring 2024/Information Visualization/HW 3")
+```
+
+
+```{r}
+setwd("~/Documents/Georgia Tech/Spring 2024/Information Visualization/HW 3")
+```
+
+```{r}
+squirrel <- read.csv("2018_Central_Park_Squirrel_Census_-_Squirrel_Data_20240224.csv")
+```
+
+
+```{r}
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+```
+
+
+```{r}
+head(squirrel)
+```
+
+```{r}
+squirrel$Above.Ground.Sighter.Measurement <- as.numeric(squirrel$Above.Ground.Sighter.Measurement)
+
+squirrel <- squirrel %>%
+  mutate(Primary.Fur.Color = ifelse(Primary.Fur.Color == "", "Unknown", Primary.Fur.Color))
+
+squirrel$Date <- as.Date(as.character(squirrel$Date), format = "%m%d%Y")
+```
+
+group by fur color for bar chart
+```{r}
+fur <- squirrel %>%
+  group_by(Primary.Fur.Color) %>%
+  summarise(Number = n())
+
+
+write.csv(fur, "bargraph.csv")
+```
+
+bar graph
+```{r}
+ggplot(fur, aes(x = Primary.Fur.Color, y = Number)) +
+  geom_bar(stat = "identity")
+```
+
+
+above ground squirrels subset
+
+```{r}
+above <- squirrel %>%
+  filter(Location == "Above Ground" & !is.na(Above.Ground.Sighter.Measurement) & Above.Ground.Sighter.Measurement != "")
+
+above <- above %>% 
+  select(Hectare.Squirrel.Number, Above.Ground.Sighter.Measurement, Primary.Fur.Color)
+
+write.csv(above, "scatterplot.csv")
+```
+
+scatter plot
+```{r}
+ggplot(above, aes(x = Hectare.Squirrel.Number, y = Above.Ground.Sighter.Measurement)) +
+  geom_point()
+```
+
+
+1. hovering and linking (scatterplot)
+```{r}
+above <- squirrel %>%
+  filter(Location == "Above Ground" & !is.na(Above.Ground.Sighter.Measurement) & Above.Ground.Sighter.Measurement != "")
+```
+
+
+```{r}
+# Create a new column by concatenating the values from the specified columns
+above$Notes <- paste(above$Color.notes, above$Specific.Location, above$Other.Activities, above$Other.Interactions, sep = "")
+
+num_blanks <- sum(is.na(above$Notes) | above$Notes == "")
+print(num_blanks)
+above <- above[above$Notes != "", ]
+```
+
+```{r}
+above <- above %>% 
+  select(Hectare.Squirrel.Number, Above.Ground.Sighter.Measurement, Primary.Fur.Color, Notes)
+
+write.csv(above, "hoverLink.csv")
+```
+
+
+
+line graph
+```{r}
+day <- squirrel %>% 
+  group_by(Date, Primary.Fur.Color) %>% 
+  summarize(Number = n())
+write.csv(day, "linegraph.csv")
+```
+
+```{r}
+ggplot(day, aes(x = Date, y = Number, color = Primary.Fur.Color)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Squirrel Sightings in Central Park, NYC during 2018 Squirrel Census") +
+  scale_color_manual(values = c("Black" = "black", "Cinnamon" = "brown", "Gray" = "gray", "Unknown" = "darkgoldenrod"))
+```
+
+
+reconfigure (line graph)
+
+```{r}
+day2 <- squirrel %>% 
+  group_by(Date, Primary.Fur.Color, Running, Climbing, Eating, Foraging) %>% 
+  summarize(Number = n())
+
+day2$Running <- as.logical(toupper(day2$Running))
+day2$Climbing <- as.logical(toupper(day2$Climbing))
+day2$Eating <- as.logical(toupper(day2$Eating))
+day2$Foraging <- as.logical(toupper(day2$Foraging))
+
+
+
+write.csv(day2, "reconfig.csv")
+```
+
+
+
+
+
+
+
+
+
+

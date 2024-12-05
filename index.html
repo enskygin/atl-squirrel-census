@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3Charts</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header-box">
+        <div class="header">
+            <h1>2018 Central Park Squirrel Census</h1>
+            <p>From October 6 to October 20, 2018, volunteers swarmed the parks of New York and recorded all squirrels in sight. Metrics included fur color, height at which squirrel was seen if above ground, what number that squirrel was recorded during a session of census reporting, and when they recorded each squirrel. More information can be found at <a href="https://www.thesquirrelcensus.com/story">https://www.thesquirrelcensus.com/story</a></p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="chart-title">
+            <h2>Squirrel Behavior Counted per Day</h2>
+            <h3 class="subtitle">Reconfigure the line chart by selecting different squirrel behaviors. Squirrels were recorded either running, climbing, eating, or foraging.</h3>
+        </div>
+        <div id="line-chart"></div>
+        <div id="checkboxes">
+            <label><input type="checkbox" class="checkbox" value="Running" checked> Running</label>
+            <label><input type="checkbox" class="checkbox" value="Climbing" checked> Climbing</label>
+            <label><input type="checkbox" class="checkbox" value="Eating" checked> Eating</label>
+            <label><input type="checkbox" class="checkbox" value="Foraging" checked> Foraging</label>
+            <div class="chart-title">
+                <h2>Number of Squirrels Counted by Color</h2>
+                <h3 class="subtitle">Click on each color to filter the connected scatter-plot below by squirrel variety.</h3>
+            </div>
+        <svg id="bar-chart"></svg>
+        <div class="chart-title">
+            <h2>Notes Taken During Squirrel Count</h2>
+            <h3 class="subtitle">Click on each dot to view notes recorded by squirrel census workers.</h3>
+        </div>
+        <svg id="scatter-plot"></svg>
+        <div id="notesContainer"></div>
+    </div>
+    <div id="legend-container"></div> 
+    
+    <script src="script.js"></script> 
+</body>
+</html>
